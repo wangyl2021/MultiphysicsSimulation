@@ -1,0 +1,139 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 0.001;
+
+vertices
+(
+    (0 0 0) //0
+    (60 0 0) //1
+    (60 5 0) //2
+    (0 5 0) //3
+
+    (0 0 0.1)  //4
+    (60 0 0.1)  //5
+    (60 5 0.1)  //6
+    (0 5 0.1)  //7
+
+    (0 1 0) //8
+    (-5 1 0) //9
+    (-5 0 0) //10
+
+    (0 1 0.1) //11
+    (-5 1 0.1) //12
+    (-5 0 0.1) //13
+    
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (100 20 1) 
+    simpleGrading 
+    (
+     1 
+     ((0.5 0.5 4) (0.5 0.5 0.25))
+     1
+    )
+
+    hex (0 8 9 10 4 11 12 13) (20 10 1)
+    simpleGrading 
+    (
+     1 
+     ((0.5 0.5 4) (0.5 0.5 0.25))
+     1
+    )
+);
+
+edges
+(
+);
+
+boundary
+(
+    inLet
+    {
+        type patch;
+        faces
+        (
+            (10 13 12 9)
+        );
+    }
+
+    outLet
+    {
+        type patch;
+        faces
+        (
+            (2 6 5 1)
+        );
+    }
+ 
+    walls
+    {
+        type wall;
+        faces
+        (
+            (9 12 11 8)
+            (3 7 6 2)
+        );
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+            (0 3 2 1)
+            (4 5 6 7)
+            (0 10 9 8)
+            (4 11 12 13)
+        );
+    }
+
+    sym
+    {
+        type symmetry;
+        faces
+        (
+            (0 4 13 10)
+            (0 1 5 4 )
+        );
+    }
+  
+    slave
+    {
+        type wall;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+
+    master
+    {
+        type wall;
+        faces
+        (
+            (4 0 11 8)
+        );
+    }
+);
+
+mergePatchPairs
+(
+  (master slave)
+);
+
+// ************************************************************************* //
