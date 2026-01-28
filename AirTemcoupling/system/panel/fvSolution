@@ -1,0 +1,54 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       dictionary;
+    location    "system/panel";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    h
+    {
+        solver           PCG;
+        preconditioner   DIC;
+        tolerance        1e-04;
+        relTol           0.1;
+    }
+
+    hFinal
+    {
+        $h;
+        tolerance        1e-04;
+        relTol           0;
+    }
+}
+
+thermoType
+{
+    type            heSolidThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState solid;
+    specie          specie;
+    energy          sensibleInternalEnergy;  // ✅ 对应 T
+    // 不要用 sensibleEnthalpy（对应 h）
+}
+PIMPLE
+{
+    nOuterCorrectors 1;          // 外迭代次数，处理多区域耦合
+    nCorrectors 2;               // 内迭代次数，提高能量方程收敛
+    nNonOrthogonalCorrectors 0;  // 非正交校正，固体网格为0
+} 
+// ************************************************************************* //

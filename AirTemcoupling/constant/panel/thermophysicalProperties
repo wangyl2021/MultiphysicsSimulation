@@ -1,0 +1,50 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heSolidThermo;      // 固体热物性模型
+    mixture         pureMixture;        // 单一组分混合物
+    transport       constIso;           // 恒定各向同性导热
+    thermo          hConst;             // 恒定焓（仅保留一个thermo字段）
+    equationOfState rhoConst;           // 恒定密度
+    specie          specie;             // 单一组分
+    energy          sensibleEnthalpy;   // 显焓（仅保留一个energy字段）
+}
+
+mixture
+{
+    specie
+    {
+        molWeight       28;
+    }
+    equationOfState
+    {
+        rho             2330;
+    }
+    thermodynamics
+    {
+        Cp              703;
+        Hf              0;
+    }
+    transport
+    {
+        kappa           150;         // 导热系数 (W/(m·K))，25℃空气
+    }
+}
+
+
+// ************************************************************************* //

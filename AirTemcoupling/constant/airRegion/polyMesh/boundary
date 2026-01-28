@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       polyBoundaryMesh;
+    location    "constant/airRegion/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+7
+(
+    inLetAir
+    {
+        type            patch;
+        nFaces          2500;
+        startFace       778344;
+    }
+    outLetAir
+    {
+        type            patch;
+        nFaces          2500;
+        startFace       780844;
+    }
+    yFrontCyclic
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          2500;
+        startFace       783344;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  yBackCyclic;
+    }
+    yBackCyclic
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          2500;
+        startFace       785844;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  yFrontCyclic;
+    }
+    groundWall
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          2500;
+        startFace       788344;
+    }
+    topWall
+    {
+        type            patch;
+        nFaces          2500;
+        startFace       790844;
+    }
+    airRegion_to_panel
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          55680;
+        startFace       793344;
+        sampleMode      nearestPatchFace;
+        sampleRegion    panel;
+        samplePatch     panel_to_airRegion;
+    }
+)
+
+// ************************************************************************* //

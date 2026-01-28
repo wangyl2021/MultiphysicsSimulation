@@ -1,0 +1,61 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 300;
+
+boundaryField
+{
+    inLetAir
+    {
+        type            fixedValue;  // 强制固定入口温度，不受流向影响
+        value           uniform 360;  // 你设置的入口高温
+    }
+    outLetAir
+    {
+        type            zeroGradient;
+    }
+    yFrontCyclic
+    {
+        type            cyclic;
+    }
+    yBackCyclic
+    {
+        type            cyclic;
+    }
+    groundWall
+    {
+        type            zeroGradient;
+    }
+    topWall
+    {
+        type            zeroGradient;
+    }
+    airRegion_to_panel
+    {
+        type            compressible::turbulentTemperatureCoupledBaffleMixed;
+        Tnbr            T;
+        kappaMethod     fluidThermo;  // 流体域使用 fluidThermo
+        kappa           none;
+        sampleRegion    panel;
+        samplePatch     panel_to_airRegion;
+        value           uniform 300;
+    }
+}
+
+
+// ************************************************************************* //

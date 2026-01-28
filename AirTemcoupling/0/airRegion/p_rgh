@@ -1,0 +1,64 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0/airRegion";
+    object      p_rgh;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+// 空气相对压力初始值（与绝对压力 p 保持一致）
+internalField   uniform 1e5;
+boundaryField
+{
+    // 进口边界
+    inLetAir
+    {
+        type            fixedFluxPressure;  // 入口压力梯度为0，由内部流场决定\
+        value           uniform 1e5;  
+    }
+    // 出口边界
+    outLetAir
+    {
+        type            fixedValue;
+        value           uniform 1e5;    
+    }
+    // 循环边界
+    yFrontCyclic
+    {
+        type            cyclic;
+    }
+    yBackCyclic
+    {
+        type            cyclic;
+    }
+    // 壁面边界
+    groundWall
+    {
+        type            fixedFluxPressure;
+        value           uniform 1e5;
+    }
+    topWall
+    {
+        type            fixedValue;
+        value           uniform 1e5;   
+    }
+    // 流固交界面
+    airRegion_to_panel
+    {
+        type            fixedFluxPressure;
+        value           uniform 1e5;
+    }
+}
+
+// ************************************************************************* //

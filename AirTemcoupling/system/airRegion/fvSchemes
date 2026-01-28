@@ -1,0 +1,81 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system/airRegion";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// 时间离散格式（瞬态用 Euler，稳态用 steadyState）
+ddtSchemes
+{
+    default         Euler;  // 瞬态：Euler | 稳态：steadyState
+}
+
+// 梯度离散格式
+gradSchemes
+{
+    default         Gauss linear;
+    grad(p)         Gauss linear;
+    grad(U)         Gauss linear;
+}
+
+// 散度离散格式
+divSchemes
+{
+    default         none;
+    // 动量方程散度（空气流动标准配置）
+    div(phi,U)      Gauss upwind;
+    // 能量方程散度（温度场）
+    div(phi,h)      Gauss upwind;
+    div(phi,T)      Gauss upwind;
+    // 湍流方程散度
+    div(phi,k)      Gauss upwind;
+    div(phi,epsilon) Gauss upwind;
+    // 粘性项散度
+    div(Dev(T(grad(U)))) Gauss linear;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+    energy          Gauss upwind;
+    div(phi,K)      $energy;
+    div(phi,h)      $energy;
+}
+
+// 拉普拉斯离散格式
+laplacianSchemes
+{
+    default         Gauss linear corrected;
+    // 动量方程粘性项
+    laplacian(nuEff,U) Gauss linear corrected;
+    // 能量方程热扩散项（层流+湍流）
+    laplacian(alphaEff,T) Gauss linear corrected;
+    // 压力泊松方程
+    laplacian(1,A,p) Gauss linear corrected;
+    // 湍流方程扩散项
+    laplacian(DkEff,k) Gauss linear corrected;
+    laplacian(DepsilonEff,epsilon) Gauss linear corrected;
+}
+
+// 插值格式
+interpolationSchemes
+{
+    default         linear;
+}
+
+// 通量格式
+fluxRequired
+{
+    default         no;
+    p               yes;
+    T               yes;
+}
+
+// ************************************************************************* //

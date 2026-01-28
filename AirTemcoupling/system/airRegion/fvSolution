@@ -1,0 +1,156 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system/airRegion";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    "rho.*"
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       0;
+        relTol          0;
+    }
+    // 压力场 p 求解器
+    p_rgh
+    {
+        solver          GAMG;
+        smoother        DIC;
+        tolerance       1e-4;
+        relTol          0.05;
+        rho             rho;
+    }
+
+    p
+    {
+        solver          GAMG;
+        preconditioner        DIC;
+        tolerance       1e-4;
+        relTol          0.05;
+        rho             rho; 
+    }
+
+    // 速度场 U 求解器
+    U
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-4;
+        relTol          0.1;
+    }
+
+    // 焓场 T 求解器（能量方程）
+    T
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-4;
+        relTol          0.1;
+    }
+
+    // 湍动能 k 求解器
+    k
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-4;
+        relTol          0.1;
+        minValue        1e-10;  // 强制k非负
+        maxValue        1e-3;   // 限制k最大值（低湍流场景上限）
+    }
+
+    // 耗散率 epsilon 求解器
+    epsilon
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-4;
+        relTol          0.1;
+        minValue        1e-12;  // 强制ε非负
+        maxValue        1e-5;   // 限制ε最大值
+    }
+
+    // 最终迭代求解器（提升精度）
+    pFinal
+    {
+        $p;
+        relTol          0;
+    }
+
+    UFinal
+    {
+        $U;
+        relTol          0;
+    }
+
+    TFinal
+    {
+        $T;
+        relTol          0;
+    }
+
+
+    p_rghFinal
+    {
+        solver          GAMG;
+        smoother        DIC;
+        tolerance       1e-6;
+        relTol          0.05;
+        rho             rho;
+    }
+
+    "(U|h|e|k|epsilon|R)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-6;
+        relTol          0.1;
+    }
+
+    "(U|h|e|k|epsilon|R)Final"
+    {
+        $U;
+        relTol          0;
+    }
+}
+
+// PIMPLE 算法（适配瞬态/含浮力流动）
+PIMPLE
+{
+    momentumPredictor      off;
+    nNonOrthogonalCorrectors 0;
+    pRefCell               0;
+    pRefValue              0;
+    turbOnFinalIterOnly    no;
+}
+
+// 松弛因子（避免迭代发散）
+relaxationFactors
+{
+    fields
+    {
+        p               0.3;
+        T               0.7;
+        k               0.7;
+        epsilon         0.7;
+    }
+    equations
+    {
+        U               0.6;
+    }
+}
+
+// ************************************************************************* //

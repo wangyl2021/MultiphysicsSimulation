@@ -1,0 +1,57 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0/airRegion";
+    object      nut;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -1 0 0 0 0];
+
+internalField   uniform 1e-6;
+
+boundaryField
+{
+    inLetAir
+    {
+        type            fixedValue;  // 必须与k的入口壁函数（kqRWallFunction）匹配
+        value           uniform 1e-6;       // 必填项：初始化占位值，与内部场一致
+    }
+    outLetAir
+    {
+        type            zeroGradient;
+    }
+    yFrontCyclic
+    {
+        type            cyclic;
+    }
+    yBackCyclic
+    {
+        type            cyclic;
+    }
+    groundWall
+    {
+        type            nutkWallFunction;
+        value           uniform 0;
+    }
+    topWall
+    {
+        type            zeroGradient;
+    }
+    airRegion_to_panel
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+}
+
+// ************************************************************************* //
