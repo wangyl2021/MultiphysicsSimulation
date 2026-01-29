@@ -1,0 +1,101 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale   1;
+
+vertices
+(
+    name v1 (10 10 10)
+    name v2 (10 10 -10)
+    name v3 (10 -10 -10)
+    name v4 (10 -10 10)
+    name v5 (-10 10 10)
+    name v6 (-10 10 -10)
+    name v7 (-10 -10 -10)
+    name v8 (-10 -10 10)
+);
+
+blocks
+(
+    hex (v1 v2 v3 v4 v5 v6 v7 v8) (50 50 50) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    inLetAir
+    {
+        type patch;
+        faces
+        (
+           (v1 v2 v3 v4)
+        );
+    }
+
+    outLetAir
+    {
+        type patch;
+        faces
+        (
+           (v8 v5 v6 v7)
+        );
+    }
+    
+    // Y方向前侧（y=0）
+    yFront
+    {
+       type patch;
+       faces
+       (
+           (v1 v2 v6 v5)
+       );
+    }
+  
+   // Y方向后侧（y=10）
+   yBack
+    {
+       type patch;
+       faces
+       (
+           (v3 v4 v8 v7)
+       );
+    }
+    
+    groundWall
+    {
+        type  wall;
+        faces
+        (
+            (v2 v3 v7 v6)
+        );
+    }
+
+    topWall
+    {
+        type  patch;
+        faces
+        (
+            (v1 v4 v8 v5)
+        );
+    }
+
+);
+
+
+// ************************************************************************* //
