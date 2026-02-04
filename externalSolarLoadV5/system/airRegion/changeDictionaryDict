@@ -1,0 +1,184 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dictionaryReplacement
+{
+    boundary
+    {
+        airRegion_to_panel
+        {
+            inGroups    2(wall viewFactorWall);
+        }
+    }
+    U
+    {
+        boundaryField
+        {
+             ".*"
+            {
+                type            pressureInletOutletVelocity;
+                value           uniform (0 0 0);
+                phi             phi;
+            }
+
+            groundWall
+            {
+                type            fixedValue;
+                value           uniform (0 0 0);
+            }
+            airRegion_to_panel
+            {
+                type            fixedValue;
+                value           uniform (0 0 0);
+            }
+        }
+    }
+
+    T
+    {
+        internalField   uniform 300;
+        boundaryField
+        {
+             ".*"
+            {
+                type            inletOutlet;
+                value           uniform 300;
+                inletValue      uniform 300;
+            }
+
+            airRegion_to_panel
+            {
+                type            compressible::turbulentTemperatureRadCoupledMixed;
+                Tnbr            T;
+                kappaMethod     fluidThermo;
+                qrNbr           none;
+                qr              qr;
+                kappa           none;
+                thermalInertia  true;
+                value           uniform 300;
+            }
+        }
+    }
+
+    epsilon
+    {
+        internalField   uniform 0.01;
+        boundaryField
+        {
+             ".*"
+            {
+                type            inletOutlet;
+                inletValue      uniform 0.01;
+                value           uniform 0.01;
+            }
+            groundWall
+            {
+                type            epsilonWallFunction;
+                value           uniform 0.01;
+            }
+
+            airRegion_to_panel
+            {
+                type            epsilonWallFunction;
+                value           uniform 0.01;
+            }
+
+        }
+    }
+
+    k
+    {
+        internalField   uniform 0.1;
+        boundaryField
+        {
+             ".*"
+            {
+                type            inletOutlet;
+                inletValue      uniform 0.1;
+                value           uniform 0.1;
+            }
+
+            groundWall
+            {
+                type            kqRWallFunction;
+                value           uniform 0.1;
+                inletValue      uniform 0.1;
+            }
+
+            airRegion_to_panel
+            {
+                type            kqRWallFunction;
+                value           uniform 0.1;
+            }
+
+        }
+    }
+
+    p_rgh
+    {
+        internalField   uniform 1e5;
+        boundaryField
+        {
+            ".*"
+            {
+                type            totalPressure;
+                p0              $internalField;
+            }
+
+            groundWall
+            {
+                type            fixedFluxPressure;
+                value           uniform 1e5;
+            }  
+
+            airRegion_to_panel
+            {
+                type            fixedFluxPressure;
+                value           uniform 1e5;
+            }
+
+        }
+    }
+
+    p
+    {
+        internalField   uniform 1e5;
+        boundaryField
+        {
+            ".*"
+            {
+                type            calculated;
+                value           uniform 1e5;
+            }
+        }
+    }
+
+    IDefault
+    {
+        internalField   uniform 0;
+        boundaryField
+        {
+            ".*"
+            {
+                type            greyDiffusiveRadiation;
+                value           uniform 0;
+            }
+        }
+    }
+}
+
+
+// ************************************************************************* //

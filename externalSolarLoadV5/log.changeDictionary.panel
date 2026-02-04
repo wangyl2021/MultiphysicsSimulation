@@ -1,0 +1,57 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61d7-20250627 OPENFOAM=2506 version=v2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : changeDictionary -region panel -subDict dictionaryReplacement
+Date   : Feb 03 2026
+Time   : 14:36:12
+Host   : dym
+PID    : 48654
+I/O    : uncollated
+Case   : /home/dym/OpenFOAM/dym-v2506/run/externalSolarLoadCopy2
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh panel for time = 0
+
+Read dictionary changeDictionaryDict with replacements for dictionaries 2(boundary T)
+Reading polyMesh/boundary file to extract patch names
+Loaded dictionary boundary with entries 1(panel_to_airRegion)
+Extracted patch groups:
+    group wall with patches 1(panel_to_airRegion)
+Replacing entries in dictionary boundary
+Special handling of boundary as polyMesh/boundary file.
+Merging entries from 0()
+fieldDict:
+{
+    panel_to_airRegion
+    {
+        type            mappedWall;
+        inGroups        1 ( wall );
+        nFaces          19968;
+        startFace       95100;
+        sampleMode      nearestPatchFace;
+        sampleRegion    airRegion;
+        samplePatch     airRegion_to_panel;
+    }
+}
+
+Writing modified boundary
+Replacing entries in dictionary T
+Loading dictionary T
+Loaded dictionary T with entries 3(dimensions internalField boundaryField)
+Merging entries from 2(internalField boundaryField)
+Writing modified fieldDict T
+
+End
+
