@@ -1,0 +1,138 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale   1;
+
+vertices
+(
+    ( 0   0   0)
+    ( 10  0   0)
+    ( 10  10  0)
+    ( 0   10  0)
+    
+    ( 0   0   10)
+    ( 10  0   10)
+    ( 10  10  10)
+    ( 0   10  10)
+    
+    ( 0   0   -0.5)
+    ( 10  0   -0.5)
+    ( 10  10  -0.5)
+    ( 0   10  -0.5)
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (30 30 33) simpleGrading (1 1 1)
+    hex (8 9 10 11 0 1 2 3 ) (30 30 3) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    maxY
+    {
+        type patch;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+    minX
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+    maxX
+    {
+        type patch;
+        faces
+        (
+            (2 6 5 1)
+        );
+    }
+    minY
+    {
+        type patch;
+        faces
+        (
+            (1 5 4 0)
+        );
+    }
+    
+    maxZ
+    {
+        type patch;
+        faces
+        (
+            (4 5 6 7)
+        );
+    }
+    
+    fmaxY
+    {
+        type patch;
+        faces
+        (
+            (11 3 2 10)
+        );
+    }
+    fminX
+    {
+        type patch;
+        faces
+        (
+            (8 0 3 11)
+        );
+    }
+    fmaxX
+    {
+        type patch;
+        faces
+        (
+            (10 2 1 9)
+        );
+    }
+    fminY
+    {
+        type patch;
+        faces
+        (
+            (9 1 0 8)
+        );
+    }
+    fminZ
+    {
+        type wall;
+        faces
+        (
+            (8 9 10 11)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+
+// ************************************************************************* //
