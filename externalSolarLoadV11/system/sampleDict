@@ -1,0 +1,38 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       dictionary;
+    location    "system";
+    object      sampleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// 采样类型：提取整个计算域的所有节点
+type            cloud;
+libs            ("libsampling.so");
+writeFormat     ascii;  // 输出ASCII文本格式，可直接打开
+writePrecision  6;      // 数值精度，按需修改
+
+// 采样方式：allPoints（整个计算域所有节点，必选）
+cloudType
+{
+    type            allPoints;
+}
+
+// 要采样的场：仅100步的T（读取你已有的100/T）
+fields          (T);
+
+// 采样时间：仅100步（精准提取，不处理其他步）
+timeScheme      select;
+times           (100);
+
+// ************************************************************************* //

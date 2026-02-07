@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     chtMultiRegionFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         200;
+
+deltaT          1;
+
+writeControl    adjustable;
+
+writeInterval   10;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  7;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           15;
+
+maxDeltaT       10;
+
+maxDi           0.25;
+
+functions
+{
+   exportTAllPoints
+{
+    type            cloud;
+    libs            ("libsampling.so");  
+    writeFormat     ascii;              // 通用文本格式，Excel可打开
+    writePrecision  8;                  // 数值精度，按需改
+    cloudType
+    {
+        type        allPoints;          // 导出全场所有网格点
+    }
+    fields          (T);               // 要导出的场：温度T（多区域改solid/T fluid/T）
+    timeScheme      timeStep;          
+    writePath       "postProcessing/exportT_auto";  // 自动导出的结果路径，自定义
+}
+}
+
+// ************************************************************************* //
