@@ -1,0 +1,34 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solidAbsoluteEnergySource
+{
+    type            scalarSemiImplicitSource;
+    active          true;
+
+    scalarSemiImplicitSourceCoeffs
+    {
+        selectionMode   cellZone;          // 选择模式：单元格区域
+        cellZone        solid;             // 作用的单元格区域名称
+        volumeMode      absolute;          // 源项模式：绝对能量（W）
+
+        // 必须的sources子字典（缺失则报当前错误）
+        sources
+        {
+            h                               // 作用于固体区域的焓场h
+            {
+                explicit        10000;        // 显式源项值（100W，absolute模式）
+                implicit        0;          // 隐式系数（0=完全显式）
+            }
+        }
+    }
+}
+
+// ************************************************************************* //
