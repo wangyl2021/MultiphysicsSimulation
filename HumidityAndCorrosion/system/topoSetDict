@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+actions
+(
+    {
+    name    solid;           // ← 创建名为 "solid" 的 cellSet
+    type    cellSet;
+    action  new;
+    source  zoneToCell;  // ← 从 cellZone 转换
+    zone    solid;           // ← 指定源 cellZone 名称
+    }
+     // 1. 定义地面floor的cellSet → 转为cellZone（固体，底部区域）
+    {
+        name    floor;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        box     (0 0 -0.5)(10 10 0); 
+    }
+    {
+        name    floor;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     floor;
+    }
+
+    {
+        name    airSet; 
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        box     (0 0 -2)(11 11 11); 
+    }
+    {
+        name    airSet;
+        type    cellSet;
+        action  subtract; 
+        source  cellToCell;
+        set     floor;
+    }
+    {
+        name    airSet;
+        type    cellSet;
+        action  subtract; 
+        source  cellToCell;
+        set     solid;
+    }
+    {
+        name    air;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     airSet; // 转为空气域cellZone，后续snappy仅在这部分操作
+    }
+);
+
+
+// ************************************************************************* //
