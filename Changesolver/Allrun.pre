@@ -1,0 +1,22 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+#------------------------------------------------------------------------------
+
+runApplication blockMesh
+runApplication snappyHexMesh -overwrite
+runApplication topoSet
+
+runApplication splitMeshRegions -cellZones -overwrite
+
+
+# Set the initial fields
+restore0Dir
+
+for region in $(foamListRegions)
+do
+    runApplication -s $region changeDictionary \
+        -region $region -subDict dictionaryReplacement
+done
+
+#------------------------------------------------------------------------------

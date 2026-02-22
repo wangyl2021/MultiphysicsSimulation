@@ -1,0 +1,34 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61d7-20250627 OPENFOAM=2506 version=v2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : changeDictionary -region floor -subDict dictionaryReplacement
+Date   : Feb 22 2026
+Time   : 11:09:34
+Host   : dym
+PID    : 26342
+I/O    : uncollated
+Case   : /home/dym/OpenFOAM/dym-v2506/run/Changesolver
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh floor for time = 0
+
+Read dictionary changeDictionaryDict with replacements for dictionaries 0()
+Reading polyMesh/boundary file to extract patch names
+Loaded dictionary boundary with entries 6(fmaxY fminX fmaxX fminY fminZ floor_to_air)
+Extracted patch groups:
+    group wall with patches 2(fminZ floor_to_air)
+
+End
+

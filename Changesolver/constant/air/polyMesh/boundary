@@ -1,0 +1,82 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       polyBoundaryMesh;
+    location    "constant/air/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+7
+(
+    maxY
+    {
+        type            patch;
+        nFaces          990;
+        startFace       98844;
+    }
+
+    minX
+    {
+        type            patch;
+        nFaces          990;
+        startFace       99834;
+    }
+
+    maxX
+    {
+        type            patch;
+        nFaces          990;
+        startFace       100824;
+    }
+
+    minY
+    {
+        type            patch;
+        nFaces          990;
+        startFace       101814;
+    }
+
+    maxZ
+    {
+        type            patch;
+        nFaces          900;
+        startFace       102804;
+    }
+
+    air_to_solid
+    {
+        type            mappedWall;
+        inGroups        2 ( wall viewFactorWall );
+        nFaces          1536;
+        startFace       103704;
+        sampleMode      nearestPatchFace;
+        sampleRegion    solid;
+        samplePatch     solid_to_air;
+    }
+
+    air_to_floor
+    {
+        type            mappedWall;
+        inGroups        2 ( wall viewFactorWall );
+        nFaces          900;
+        startFace       105240;
+        sampleMode      nearestPatchFace;
+        sampleRegion    floor;
+        samplePatch     floor_to_air;
+    }
+
+)
+
+
+// ************************************************************************* //

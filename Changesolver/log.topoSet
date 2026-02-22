@@ -1,0 +1,62 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61d7-20250627 OPENFOAM=2506 version=v2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : topoSet
+Date   : Feb 22 2026
+Time   : 11:09:34
+Host   : dym
+PID    : 26328
+I/O    : uncollated
+Case   : /home/dym/OpenFOAM/dym-v2506/run/Changesolver
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create polyMesh for time = 0
+
+Reading topoSetDict
+
+Time = 0
+    mesh not changed.
+Created cellSet solid
+    Applying source zoneToCell
+    Adding all cells of cell zones: (solid) ...
+    Using zone solid with 2304 cells
+    cellSet solid now size 2304
+Created cellSet floor
+    Applying source boxToCell
+    Adding cells with centre within boxes 1((0 0 -0.5) (10 10 0))
+    cellSet floor now size 2700
+Created cellZoneSet floor
+    Applying source setToCellZone
+    Adding all cells from cell set: floor ...
+    cellZoneSet floor now size 2700
+Created cellSet airSet
+    Applying source boxToCell
+    Adding cells with centre within boxes 1((0 0 -2) (11 11 11))
+    cellSet airSet now size 38756
+Read set cellSet airSet size:38756
+    Applying source cellToCell
+    Removing all elements of cell sets: (floor)
+    cellSet airSet now size 36056
+Read set cellSet airSet size:36056
+    Applying source cellToCell
+    Removing all elements of cell sets: (solid)
+    cellSet airSet now size 33752
+Created cellZoneSet air
+    Applying source setToCellZone
+    Adding all cells from cell set: airSet ...
+    cellZoneSet air now size 33752
+
+End
+
