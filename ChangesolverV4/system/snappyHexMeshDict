@@ -1,0 +1,154 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Type of mesh generation:
+//  - castellated (default)
+//  - castellatedBufferLayer
+//type            castellatedBufferLayer;
+
+
+// Which of the steps to run
+castellatedMesh true;
+snap            true;
+addLayers       false;
+
+
+
+geometry
+{
+    panel2.stl
+    {
+        type triSurfaceMesh;
+        name solid;
+        cellZone solid;
+        cellZoneInside inside;  
+    }
+}
+
+// Settings for the castellatedMesh generation.
+castellatedMeshControls
+{
+    maxLocalCells 10000;
+    maxGlobalCells 2000000;
+    minRefinementCells 0;
+    maxLoadUnbalance 0.10;
+    nCellsBetweenLevels 1;
+    minCellSize 0.5; 
+    features
+    (
+        
+    );
+    refinementSurfaces
+    {
+        solid
+        {
+        level (1 2);
+        }
+    }
+    resolveFeatureAngle 30;
+
+    planarAngle 30;
+
+    refinementRegions
+    {
+        // 针对panel几何体的距离加密（核心：锚定空间范围+合理加密）
+    solid
+    {
+        mode        distance;  // 基于与panel的距离进行加密
+        // levels ((距离 加密级别)) 
+        // 规则：距离越小，加密级别越高（建议和refinementSurfaces的level匹配）
+        levels      (
+            (0.01 2)   
+            (0.05 1) 
+        );
+        // 可选：强制限定加密的空间范围，避免无意义加密
+    }
+    }
+
+    // 可选：全局背景网格加密（确保整体网格不会太粗）
+    limitRegions
+    {
+       
+    }
+
+    allowFreeStandingZoneFaces false;
+
+    locationsInMesh
+    ( 
+        ((1 1 1) air)    // 空气区域内部点
+        ((5 5 3.8) solid) 
+    );
+        // Per synthesised faceZone name the faceType and type of baffles to
+        // create
+        faceZoneControls
+        {
+        }
+}
+
+    
+// Settings for the snapping.
+snapControls
+{
+    nSmoothPatch 3;
+    tolerance 0.01;
+    nSolveIter 30;
+    nRelaxIter 5;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap false;
+    explicitFeatureSnap true;
+    multiRegionFeatureSnap false;
+}
+
+// Settings for the layer addition.
+addLayersControls
+{
+    relativeSizes true;
+        expansionRatio 1.0;
+        finalLayerThickness 0.3;
+    minThickness 0.1;
+    layers
+    {
+    }
+    nGrow 0;
+        featureAngle 120;
+        maxFaceThicknessRatio 0.5;
+        nSmoothSurfaceNormals 1;
+        nSmoothThickness 10;
+        minMedialAxisAngle 90;
+        maxThicknessToMedialRatio 0.3;
+        nSmoothNormals 3;
+        slipFeatureAngle 30;
+        nRelaxIter 5;
+        nBufferCellsNoExtrude 0;
+        nLayerIter 50;
+        nRelaxedIter 20;
+}
+meshQualityControls
+{
+    #include "meshQualityDict"
+
+
+    relaxed
+    {
+        maxNonOrtho 75;
+    }
+        nSmoothScale 4;
+        errorReduction 0.75;
+}
+
+mergeTolerance 1e-6;
+
+// ************************************************************************* //

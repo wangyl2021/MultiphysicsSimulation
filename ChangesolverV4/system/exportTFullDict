@@ -1,0 +1,38 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       dictionary;
+    location    "system";
+    object      exportTFullDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// 全局设置：从最新时间步开始，跳过constant/0（无有效数据）
+startFrom       latestTime;
+writeControl    timeStep;
+
+// 导出网格中心坐标（x/y/z），生成文件C
+writeCentres
+{
+    type            writeCellCentres;
+    libs            ("libfieldFunctionObjects.so");
+    writeFormat     ascii;  // 纯文本格式，方便后续合并
+}
+
+// 导出温度场T（复用已有T文件，确保数据一致）
+writeT
+{
+    type            writeFields;
+    libs            ("libfieldFunctionObjects.so");
+    fields          (solid/T);    // 单区域温度场，多区域改solid/T fluid/T
+}
+
+// ************************************************************************* //
