@@ -86,7 +86,9 @@
 word zoneName("solid"); 
 
 label zoneID = mesh.cellZones().findZoneID(zoneName);
-int currentTime = atoi(runTime.timeName().c_str());
+
+label currentTime = readLabel(runTime.timeName());
+
 if (zoneID != -1 && currentTime % 1000 == 0)
 {
     const cellZone& cz = mesh.cellZones()[zoneID];
@@ -95,26 +97,38 @@ if (zoneID != -1 && currentTime % 1000 == 0)
     (
         "postProcessing/"
       + solidRegions[i].name()
-      + "/zoneT"
+      + "/zoneData"
     );
 
     mkDir(dir);
 
     fileName fileNameOut
     (
-        dir/"T_" + runTime.timeName() + ".txt"
+        dir/"zone_" + runTime.timeName() + ".txt"
     );
+
     OFstream outFile(fileNameOut);
 
+    outFile << "cellI T" << nl;
+
     const volScalarField& Tfield = thermo.T();
+    const volVectorField& C = mesh.C();   // 网格中心
 
     forAll(cz, j)
     {
         label cellI = cz[j];
 
-        outFile << cellI << " "
-                << Tfield[cellI] << nl;
+        const vector& center = C[cellI];
+
+        outFile 
+            << cellI << " "
+            << Tfield[cellI]
+            << nl;
     }
+
+    Info << "Zone data written for "
+         << solidRegions[i].name()
+         << " at time " << runTime.timeName() << endl;
 }
 }
 
