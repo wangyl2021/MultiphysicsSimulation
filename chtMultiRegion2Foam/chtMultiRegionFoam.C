@@ -54,7 +54,9 @@ Description
 #include "loopControl.H"
 #include "pressureControl.H"
 
-
+#include "IFstream.H"
+#include "OFstream.H"
+#include "OSspecific.H"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])

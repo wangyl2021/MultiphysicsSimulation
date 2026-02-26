@@ -1,12 +1,30 @@
-#include "OFstream.H"
-#include "OSspecific.H"
 // ===== 温度驱动退化模型 =====
     volScalarField& damage = damages[i];
 
-    dimensionedScalar RH("RH", dimless, 0.8);
     dimensionedScalar A("A", dimless/dimTime/dimTemperature, 1e-5);
     dimensionedScalar Tcrit("Tcrit", dimTemperature, 300);
 {
+//输入RH
+fileName RHfile
+(
+    runTime.constant()/"RH.txt"
+);
+
+scalar RHvalue = 0.8;   // 默认值
+
+if (isFile(RHfile))
+{
+    IFstream RHstream(RHfile);
+    RHstream >> RHvalue;
+
+    Info<< "Read RH from file: " << RHvalue << endl;
+}
+else
+{
+    Warning<< "RH.txt not found, using default RH=0.8" << endl;
+}
+dimensionedScalar RH("RH", dimless, RHvalue);
+
     // 温度超限量
     volScalarField deltaT
     (
@@ -121,7 +139,6 @@ if (zoneID != -1 && currentTime % 1000 == 0)
         const vector& center = C[cellI];
 
         outFile 
-            << cellI << " "
             << Tfield[cellI]
             << nl;
     }
@@ -130,6 +147,7 @@ if (zoneID != -1 && currentTime % 1000 == 0)
          << solidRegions[i].name()
          << " at time " << runTime.timeName() << endl;
 }
+
 }
 
         Info<< "Min/max T:" << min(thermo.T()).value() << ' '
