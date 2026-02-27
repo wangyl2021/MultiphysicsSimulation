@@ -30,24 +30,6 @@ solidAbsoluteEnergySource
     }
 }
 
-solidCpDegradation
-{
-    type            scalarSemiImplicitSource;
-    active          yes;
 
-
-    scalarSemiImplicitSourceCoeffs
-    {
-        selectionMode   all; 
-        fields (h);
-
-        volumeMode  specific;
-
-        injectionRateSuSp
-        {
-            h   (0  -5);
-        }
-    }
-}
 
 // ************************************************************************* //
