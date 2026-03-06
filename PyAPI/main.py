@@ -1,48 +1,66 @@
+import asyncio
 import json
-from fastapi import FastAPI, WebSocket
-import uvicorn
+import websockets
+
 from file_exchange import *
 from solver_runner import run_solver
 from config import *
 
-app = FastAPI()
+latest_data = {}
 
-latest_data = {}  
+async def websocket_client():
+    #地址
+    uri = "ws://external-api.com/ws"  
 
-# websocket端点
-@app.websocket("/ws")
-async def websocket_endpoint(ws: WebSocket):
-    await ws.accept()
-    print("客户端已连接")
+    async with websockets.connect(uri) as ws:
 
-    while True:
-        try:
-            msg = await ws.receive_text()
-            data = json.loads(msg)
-            msg_type = data.get("type")
+        print("已连接外部WebSocket服务器")
 
-            #读写数据
-            if msg_type == "data":
-                latest_data.update(data)
-                write_RH_file(data.get("RH"))
-                await ws.send_text(json.dumps({"status": "data_received"}))
+        while True:
 
-            elif msg_type == "start":
-                # 启动求解器
-                run_solver()
-                # 读取温度txt
-                result = read_all_zone_temperatures(Temp_File)
-                print("读取温度:", result)
-                # 返回给客户端
-                await ws.send_text(json.dumps(result))
+            try:
+                msg = await ws.recv()
+                data = json.loads(msg)
+                msg_type = data.get("type")
 
-            else:
-                await ws.send_text(json.dumps({"error": "unknown type"}))
+                # 读写数据
+                if msg_type == "data":
 
-        except Exception as e:
-            print("WebSocket错误:", e)
-            break
+                    latest_data.update(data)
+
+                    write_RH_file(data.get("RH"))
+
+                    await ws.send(json.dumps({
+                        "status": "data_received"
+                    }))
+
+
+                elif msg_type == "start":
+
+                    # 启动求解器
+                    run_solver()
+
+                    # 读取温度txt
+                    result = read_all_zone_temperatures(Temp_File)
+
+                    print("读取温度:", result)
+
+                    # 返回给服务器
+                    await ws.send(json.dumps(result))
+
+
+                else:
+
+                    await ws.send(json.dumps({
+                        "error": "unknown type"
+                    }))
+
+            except Exception as e:
+
+                print("WebSocket错误:", e)
+                break
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    asyncio.run(websocket_client())
